@@ -1,66 +1,48 @@
 // src/App.tsx
-import { ChakraProvider, Box, useColorMode, Button } from "@chakra-ui/react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import { Timeline } from "./pages/Timeline";
 import { Blogs } from "./pages/Blogs";
 import { Contact } from "./pages/Contact";
+import { ThemeProvider, useTheme } from "./components/ThemeContext";
+import "./App.css"; // Import the CSS file
+import { FaAffiliatetheme } from "react-icons/fa";
 
-interface NavbarProps {
-  colorMode: "light" | "dark";
-  toggleColorMode: () => void;
-}
+const Navbar: React.FC = () => {
+  const { colorMode, toggleColorMode } = useTheme();
 
-const Navbar: React.FC<NavbarProps> = ({ colorMode, toggleColorMode }) => {
   return (
-    <Box
-      display="flex"
-      justifyContent="space-between"
-      p="4"
-      bg={colorMode === "dark" ? "gray.800" : "gray.100"}
-    >
-      <Box>
+    <header style={{ background: colorMode === "light" ? "grey" : "black" }}>
+      <nav>
         <Link to="/">Home</Link>
-        <Link to="/timeline" style={{ marginLeft: "15px" }}>
-          Timeline
-        </Link>
-        <Link to="/blogs" style={{ marginLeft: "15px" }}>
-          Blogs
-        </Link>
-        <Link to="/contact" style={{ marginLeft: "15px" }}>
-          Contact
-        </Link>
-      </Box>
-      <Button onClick={toggleColorMode}>
-        {colorMode === "light" ? "Dark" : "Light"} Mode
-      </Button>
-    </Box>
+        <Link to="/timeline">Timeline</Link>
+        <Link to="/blogs">Blogs</Link>
+        <Link to="/contact">Contact</Link>
+        <FaAffiliatetheme
+          color={colorMode === "light" ? "Dark" : "Light"}
+          onClick={toggleColorMode}
+        />
+      </nav>
+    </header>
   );
 };
 
 const App: React.FC = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
-
   return (
-    <ChakraProvider>
+    <ThemeProvider>
       <Router>
-        <Box>
-          <Navbar colorMode={colorMode} toggleColorMode={toggleColorMode} />
+        <Navbar />
+        <div className="main-content">
           <Routes>
-            <Route path="/" element={<Home colorMode={colorMode} />} />
-            <Route
-              path="/timeline"
-              element={<Timeline colorMode={colorMode} />}
-            />
-            <Route path="/blogs" element={<Blogs colorMode={colorMode} />} />
-            <Route
-              path="/contact"
-              element={<Contact colorMode={colorMode} />}
-            />
+            <Route path="/" element={<Home />} />
+            <Route path="/timeline" element={<Timeline />} />
+            <Route path="/blogs" element={<Blogs />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
-        </Box>
+        </div>
       </Router>
-    </ChakraProvider>
+    </ThemeProvider>
   );
 };
 
